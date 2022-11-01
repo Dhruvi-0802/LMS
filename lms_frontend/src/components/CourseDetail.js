@@ -13,7 +13,7 @@ function CourseDetail(){
                     <h3>Course Title</h3>
                     <p>element for abbreviations and acronyms to show the expanded version on hover. 
                     Abbreviations have a default underline and gain a help cursor to provide additional context on hover and to users of assistive technologies.</p>
-                    <p className='fw-bold'>Course By: <a href='#'>Teacher 1 </a></p>
+                    <p className="fw-bold">Course By: <Link to="/teacher-detail/1">Teacher 1</Link></p>
                     <p className='fw-bold'>Duration: 3 Hours 30 Minutes </p>
                     <p className='fw-bold'>Total Enrolled: 456 Students </p>
                     <p className='fw-bold'>Rating: 4.5/5 </p>
