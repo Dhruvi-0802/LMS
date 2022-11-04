@@ -2,7 +2,7 @@ from tabnanny import verbose
 from django.db import models
 
 # Create your models here.
-
+ 
 #Teacher Model
 class Teacher(models.Model):
     full_name = models.CharField (max_length = 100)
@@ -10,7 +10,7 @@ class Teacher(models.Model):
     password = models.CharField (max_length = 100)
     qualification = models.CharField (max_length = 200)
     mobile_no = models.CharField (max_length = 20)
-    address = models.TextField()
+    skills = models.TextField()
     
     class Meta:
         verbose_name_plural = "1. Teacher"

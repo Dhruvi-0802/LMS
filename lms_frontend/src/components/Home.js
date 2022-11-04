@@ -110,6 +110,11 @@ function Home(){
                         <div className="card-body">
                             <h5 className="card-title"><Link to="/teacher-detail/1">Teacher Name</Link></h5>
                         </div>
+                        <div className='card-footer'>
+                            <div className="title">
+                                <span>Rating: 4.5/5</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="col-md-3">
