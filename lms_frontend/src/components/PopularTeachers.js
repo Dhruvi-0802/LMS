@@ -5,7 +5,6 @@ import axios from 'axios';
 const baseUrl = 'http://127.0.0.1:8000/api';
 function PopularTeachers(){
     const[teacher, setTeacher] = useState(null);
-    console.log("Helo");
     useEffect(()=>{
       axios.get(baseUrl+'/teacher/').then((response)=>{
         setTeacher(response.data);
