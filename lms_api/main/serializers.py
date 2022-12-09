@@ -2,10 +2,11 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from . import models
 
-class TeacherSerializer(serializers.ModelSerializer) :
-    class Meta:
-        model=models.Teacher
-        fields=['id', 'full_name', 'email', 'password', 'qualification', 'mobile_no' , 'skills']
+class TeacherSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=models.Teacher
+		fields=['id','full_name','detail','email','password','qualification','mobile_no','skills','teacher_courses']
+		depth=1
 
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
@@ -18,7 +19,7 @@ class CourseSerializer(serializers.ModelSerializer):
 		model=models.Course
 		fields=['id','category','teacher','title','description','featured_img','techs','course_chapters','related_videos']
 		depth=1
-    
+
 class ChapterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=models.Chapter
