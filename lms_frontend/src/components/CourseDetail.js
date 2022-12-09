@@ -1,14 +1,20 @@
+import OwlCarousel from 'react-owl-carousel';  
+import 'owl.carousel/dist/assets/owl.carousel.css';  
+import 'owl.carousel/dist/assets/owl.theme.default.css'; 
+
 import {useParams} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 const siteUrl='http://127.0.0.1:8000/';
 const baseUrl='http://127.0.0.1:8000/api';
+
 function CourseDetail(){
     const [courseData,setcourseData]=useState([]);
     const [chapterData,setchapterData]=useState([]);
     const [teacherData,setteacherData]=useState([]);
     const [realtedcourseData,setrealtedcourseData]=useState([]);
+    const [techList,settechList]=useState([]);
     let {course_id}=useParams();
     // Fetch courses when page load
     useEffect(()=>{
@@ -20,6 +26,7 @@ function CourseDetail(){
                 setchapterData(res.data.course_chapters);
                 setteacherData(res.data.teacher);
                 setrealtedcourseData(JSON.parse(res.data.related_videos));
+                settechList(res.data.tech_list);
             });
         }catch(error){
             console.log(error);
@@ -37,8 +44,14 @@ function CourseDetail(){
                 <div className="col-8">
                     <h3>{courseData.title}</h3>
                     <p>{courseData.description}</p>
-                    <p className="fw-bold">Course By: <Link to="/teacher-detail/1">{teacherData.full_name}</Link></p>
-                    <p className="fw-bold">Techs: {courseData.techs}</p>
+                    <p className="fw-bold">Course By: <Link to={`/teacher-detail/${teacherData.id}`}>{teacherData.full_name}</Link></p>
+                    <p className="fw-bold">Techs:&nbsp;  
+                    {techList.map((tech,index) =>
+                        <>
+                            <Link to={`/category/${tech.trim()}`} className='badge badge-pill text-dark bg-warning'>{tech.trim()}</Link>&nbsp;
+                        </>
+                    )}
+                    </p>
                     <p className="fw-bold">Duration: 3 Hours 30 Minuts</p>
                     <p className="fw-bold">Total Enrolled: 456 Students</p>
                     <p className="fw-bold">Rating: 4.5/5</p>
@@ -79,19 +92,18 @@ function CourseDetail(){
             </div>
 
             <h3 className="pb-1 mb-4 mt-5">Related Courses</h3>
-            <div className="row mb-4">
-            {realtedcourseData.map((rcourse,index) =>
-                <div className="col-md-3">
-                    <div className="card">
-                        <Link target="__blank" to={`/detail/${rcourse.pk}`}><img src={`${siteUrl}media/${rcourse.fields.featured_img}`} className="card-img-top" alt={rcourse.fields.title} /></Link>
-                        <div className="card-body">
-                        <h5 className="card-title"><Link to={`/detail/${rcourse.pk}`}>{rcourse.fields.title}</Link></h5>
+            <div className="row">
+                {realtedcourseData.map((rcourse,index) =>
+                    <div key={index} className="col-md-3">
+                        <div className="card">
+                            <Link target="__blank" to={`/detail/${rcourse.pk}`}><img src={`${siteUrl}media/${rcourse.fields.featured_img}`} className="card-img-top" alt={rcourse.fields.title} /></Link>
+                            <div className="card-body">
+                            <h5 className="card-title"><Link to={`/detail/${rcourse.pk}`}>{rcourse.fields.title}</Link></h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
-
         </div>
     );
 }
