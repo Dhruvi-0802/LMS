@@ -12,6 +12,7 @@ function AddChapter(){
         video:'',
         remarks:''
     });
+    const [videoDuration,setvideoDuration]=useState();
 
     const handleChange=(event)=>{
         setChapterData({
@@ -21,6 +22,17 @@ function AddChapter(){
     }
 
     const handleFileChange=(event)=>{
+        window.URL = window.URL || window.webkitURL;
+        var video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = function () {
+            window.URL.revokeObjectURL(video.src);
+            setvideoDuration(video.duration);
+            // alert("Duration : " + video.duration + " seconds");
+        }
+        video.src = URL.createObjectURL(event.target.files[0]);
+
+
         setChapterData({
             ...chapterData,
             [event.target.name]:event.target.files[0]
@@ -35,6 +47,7 @@ function AddChapter(){
         _formData.append('title',chapterData.title);
         _formData.append('description',chapterData.description);
         _formData.append('video',chapterData.video,chapterData.video.name);
+        _formData.append('video_duration',videoDuration);
         _formData.append('remarks',chapterData.remarks);
         
         try{

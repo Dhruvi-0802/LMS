@@ -1,5 +1,6 @@
-from tabnanny import verbose
 from django.db import models
+from django.core import serializers
+import moviepy.editor
 
 #Teacher Model
 class Teacher(models.Model):
@@ -35,6 +36,10 @@ class Course(models.Model) :
 
     class Meta:
         verbose_name_plural = "3. Courses"
+        
+    def related_videos(self):
+            related_videos=Course.objects.filter(techs__icontains=self.techs)
+            return serializers.serialize('json',related_videos)
 
 # Chapter Model
 class Chapter(models.Model):
@@ -42,6 +47,7 @@ class Chapter(models.Model):
 	title=models.CharField(max_length=150)
 	description=models.TextField()
 	video=models.FileField(upload_to='chapter_videos/',null=True)
+	video_duration=models.CharField(max_length=100, blank=True, null=True)
 	remarks=models.TextField(null=True)
 
 	class Meta:

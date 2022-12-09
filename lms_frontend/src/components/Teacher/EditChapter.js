@@ -14,8 +14,19 @@ function EditChapter(){
         video:'',
         remarks:''
     });
+    const [videoDuration,setvideoDuration]=useState();
 
     const handleChange=(event)=>{
+        window.URL = window.URL || window.webkitURL;
+        var video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = function () {
+            window.URL.revokeObjectURL(video.src);
+            setvideoDuration(video.duration);
+            // alert("Duration : " + video.duration + " seconds");
+        }
+        video.src = URL.createObjectURL(event.target.files[0]);
+
         setChapterData({
             ...chapterData,
             [event.target.name]:event.target.value
@@ -37,9 +48,10 @@ function EditChapter(){
         _formData.append('description',chapterData.description);
         if(chapterData.video!==''){
             _formData.append('video',chapterData.video,chapterData.video.name);
+            _formData.append('video_duration',videoDuration);
         }
         _formData.append('remarks',chapterData.remarks);
-
+        
         try{
             axios.put(baseUrl+'/chapter/'+chapter_id,_formData,{
                 headers: {
@@ -76,8 +88,9 @@ function EditChapter(){
                     description:res.data.description,
                     prev_video:res.data.video,
                     remarks:res.data.remarks,
-                    video:''
+                    video:'',
                 });
+                setvideoDuration(res.data.video_duration);
             });
         }catch(error){
             console.log(error);
