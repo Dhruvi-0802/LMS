@@ -3,6 +3,7 @@ import TeacherSidebar from './TeacherSidebar';
 import {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 const baseUrl='http://127.0.0.1:8000/api'
 
 function CourseChapters(){
@@ -23,15 +24,37 @@ function CourseChapters(){
     },[]);
 
     // Delete Data
-    const Swal = require('sweetalert2');
-    const handleDeleteClick = () =>{
+    const handleDeleteClick = (chapter_id) => {
         Swal.fire({
             title: 'Confirm',
             text: 'Are you sure you want to delete this data?',
             icon: 'info',
             confirmButtonText: 'Conitnue',
             showCancelButton:true
+        }).then((result)=>{
+            if(result.isConfirmed){
+                try{
+                    axios.delete(baseUrl+'/chapter/'+chapter_id)
+                    .then((res)=>{
+                        Swal.fire('success','Data has been deleted.');
+                        try{
+                            axios.get(baseUrl+'/course-chapters/'+course_id)
+                            .then((res)=>{
+                                settotalResult(res.data.length);
+                                setchapterData(res.data);
+                            });
+                        }catch(error){
+                            console.log(error);
+                        }
+                    });
+                }catch(error){
+                    Swal.fire('error','Data has not been deleted!!');
+                }
+            }else{
+                Swal.fire('error','Data has not been deleted!!');
+            }
         });
+
     }
 
     return(
@@ -60,9 +83,9 @@ function CourseChapters(){
                                         <td>
                                             <video controls width="250">
 
-                                            <source src={chapter.video.url} type="video/webm" />
+                                            <source src={chapter.video} type="video/webm" />
 
-                                            <source src={chapter.video.url} type="video/mp4" />
+                                            <source src={chapter.video} type="video/mp4" />
 
                                             Sorry, your browser doesn't support embedded videos.
                                             </video>
@@ -70,7 +93,7 @@ function CourseChapters(){
                                         <td>{chapter.remarks}</td>
                                         <td>
                                             <Link to={`/edit-chapter/`+chapter.id} className='btn btn-sm text-white btn-info'><i class="bi bi-pencil-square"></i></Link>
-                                            <button onClick={handleDeleteClick} className='btn btn-sm btn-danger ms-1'><i class="bi bi-trash"></i></button>
+                                            <button onClick={()=>handleDeleteClick(chapter.id)} className='btn btn-sm btn-danger ms-1'><i class="bi bi-trash"></i></button>
                                         </td>
                                     </tr>
                                     )}
