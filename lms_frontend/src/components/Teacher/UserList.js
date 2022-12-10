@@ -1,6 +1,24 @@
-import {Link} from 'react-router-dom';
+import {Link,useParams} from 'react-router-dom';
 import TeacherSidebar from './TeacherSidebar';
-function RecommendedCourses(){
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+const baseUrl='http://127.0.0.1:8000/api';
+function UserList(){
+    const [StudentData,setStudentData]=useState([]);
+
+    const teacherId=localStorage.getItem('teacherId');
+    // Fetch courses when page load
+    useEffect(()=>{
+        try{
+            axios.get(baseUrl+'/fetch-all-enrolled-students/'+teacherId)
+            .then((res)=>{
+                setStudentData(res.data);
+            });
+        }catch(error){
+            console.log(error);
+        }
+    },[]);
+
     return (
         <div className="container mt-4">
             <div className="row">
@@ -9,24 +27,28 @@ function RecommendedCourses(){
                 </aside>
                 <section className='col-md-9'>
                     <div className='card'>
-                        <h5 className='card-header'>User List</h5>
+                        <h5 className='card-header'>All Student List</h5>
                         <div className='card-body'>
                             <table className="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Enrolled Course</th>
-                                        <th>Action</th>
+                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Inrested Categories</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {StudentData.map((row,index) =>
                                     <tr>
-                                        <td><Link to="/">John Doe</Link></td>
-                                        <td><Link to="/">Php</Link></td>
+                                        <td>{row.student.full_name}</td>
+                                        <td>{row.student.email}</td>
+                                        <td>{row.student.username}</td>
                                         <td>
-                                            <button className='btn btn-danger btn-sm'>Delete</button>
+                                        {row.student.interested_categories}  
                                         </td>
                                     </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -37,4 +59,4 @@ function RecommendedCourses(){
     );
 }
 
-export default RecommendedCourses;
+export default UserList;
