@@ -6,7 +6,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.response import Response
 
-from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer
+from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer
 from . import models
 
 
@@ -97,3 +97,16 @@ class CourseChapterList(generics.ListCreateAPIView):
 class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = models.Chapter.objects.all()
 	serializer_class = ChapterSerializer
+
+	def get_serializer_context(self):
+		context=super().get_serializer_context()
+		context['chapter_duration']=self.chapter_duration
+		print('context-----------------')
+		print(context)
+		return context
+
+# Student Data
+class StudentList(generics.ListCreateAPIView):
+	queryset=models.Student.objects.all()
+	serializer_class=StudentSerializer
+	# permission_classes=[permissions.IsAuthenticated]

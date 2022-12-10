@@ -20,11 +20,13 @@ function RecommendedCourses(){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td><Link to="/">John Doe</Link></td>
-                                    <td><Link to="/">Php</Link></td>
-                                    <td>
-                                        <button className='btn btn-danger btn-sm active'>Delete</button>
-                                    </td>
+                                    <tr>
+                                        <td><Link to="/">John Doe</Link></td>
+                                        <td><Link to="/">Php</Link></td>
+                                        <td>
+                                            <button className='btn btn-danger btn-sm'>Delete</button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

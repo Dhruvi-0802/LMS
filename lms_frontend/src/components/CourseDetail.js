@@ -66,7 +66,7 @@ function CourseDetail(){
                 {chapterData.map((chapter,index) =>
                     <li className="list-group-item" key={chapter.id}>{chapter.title}
                         <span className="float-end">
-                            <span className="me-5">1 Hour 30 Minuts</span>
+                            <span className="me-5">{chapter.chapter_duration}</span>
                             <button className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#videoModal1"><i className="bi-youtube"></i></button>
                         </span>
 {/* Video Modal Start */}

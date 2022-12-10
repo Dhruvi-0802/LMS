@@ -55,21 +55,33 @@ class Chapter(models.Model):
 	title=models.CharField(max_length=150)
 	description=models.TextField()
 	video=models.FileField(upload_to='chapter_videos/',null=True)
-	video_duration=models.CharField(max_length=100, blank=True, null=True)
 	remarks=models.TextField(null=True)
 
 	class Meta:
 		verbose_name_plural="4. Chapters"
 
+	def chapter_duration(self):
+		seconds=0
+		import cv2
+		cap = cv2.VideoCapture(self.video.path)
+		fps = cap.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
+		frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+		if frame_count:
+			duration = frame_count/fps
+			print('fps = ' + str(fps))
+			print('number of frames = ' + str(frame_count))
+			print('duration (S) = ' + str(duration))
+			minutes = int(duration/60)
+			seconds = duration%60
+			print('duration (M:S) = ' + str(minutes) + ':' + str(seconds))
+		return seconds
 
 # Teacher Model
 class Student(models.Model):
 	full_name=models.CharField(max_length=100)
 	email=models.CharField(max_length=100)
 	password=models.CharField(max_length=100)
-	qualification=models.CharField(max_length=200)
-	mobile_no=models.CharField(max_length=20)
-	address=models.TextField()
+	username=models.CharField(max_length=200)
 	interested_categories=models.TextField()
 
 	class Meta:
