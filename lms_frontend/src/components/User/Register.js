@@ -12,8 +12,20 @@ function Register(){
         'status':''
     });
 
+    const [studentErrorData, setstudentErrorData]=useState({
+        'full_name':true,
+        'email':true,
+        'password':true,
+        'username':true,
+        'interested_categories':true,
+    });
+
     // Change Element value
     const handleChange=(event)=>{
+        setstudentData({
+            ...studentData,
+            [event.target.name]:event.target.value
+        });
         setstudentData({
             ...studentData,
             [event.target.name]:event.target.value
@@ -31,7 +43,7 @@ function Register(){
         studentFormData.append("interested_categories", studentData.interested_categories)
         try{
             axios.post(baseUrl,studentFormData).then((response)=>{
-                console.log(response);
+                console.log(response.data);
                 setstudentData({
                     'full_name':'',
                     'email':'',
@@ -40,9 +52,17 @@ function Register(){
                     'interested_categories':'',
                     'status':'success'
                 });
+            }).catch(function(error){
+                setstudentErrorData({
+                    'full_name':error.response.data.full_name,
+                    'email':error.response.data.email[0],
+                    'username':error.response.data.username,
+                    'password':error.response.data.password,
+                    'interested_categories':error.response.data.interested_categories,
+                });
+                console.log(studentErrorData);
             });
         }catch(error){
-            console.log(error);
             setstudentData({'status':'error'})
         }
         
@@ -65,22 +85,27 @@ function Register(){
                             <div className="mb-3">
                                 <label for="exampleInputEmail1" className="form-label">Full Name</label>
                                 <input value={studentData.full_name} type="text" name='full_name' onChange={handleChange} className="form-control" />
+                                {studentErrorData.full_name && <p className="text-danger">{studentErrorData.full_name}</p>}
                             </div>
                             <div className="mb-3">
                                 <label for="exampleInputEmail1" className="form-label">Email</label>
                                 <input value={studentData.email} type="email" name='email' onChange={handleChange} className="form-control" />
+                                {studentErrorData.email && <p className="text-danger">{studentErrorData.email}</p>}
                             </div>
                             <div className="mb-3">
                                 <label for="exampleInputEmail1" className="form-label">Username</label>
                                 <input value={studentData.username} type="text" name='username' onChange={handleChange} className="form-control" />
+                                {studentErrorData.username && <p className="text-danger">{studentErrorData.username}</p>}
                             </div>
                             <div className="mb-3">
                                 <label for="exampleInputPassword1" className="form-label">Password</label>
                                 <input value={studentData.password} type="password" name='password' onChange={handleChange} className="form-control" id="exampleInputPassword1" />
+                                {studentErrorData.password && <p className="text-danger">{studentErrorData.password}</p>}
                             </div>
                             <div className="mb-3">
                                 <label for="exampleInputEmail1" className="form-label">Interests</label>
                                 <textarea value={studentData.interested_categories} onChange={handleChange} name='interested_categories' className="form-control"></textarea>
+                                {studentErrorData.interested_categories && <p className="text-danger">{studentErrorData.interested_categories}</p>}
                                 <div id="emailHelp" class="form-text">Php, Python, Javascript, etc</div>
                             </div>
                             <button type="submit" onClick={submitForm} className="btn btn-primary">Register</button>
