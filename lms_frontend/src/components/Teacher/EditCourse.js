@@ -126,7 +126,7 @@ function EditCourse(){
                                     <label for="video" className="form-label">Featured Image</label>
                                     <input type="file" onChange={handleFileChange} name='f_img' id="video" className="form-control" />
                                     {courseData.prev_img && 
-                                        <p className='mt-2'><img src={courseData.prev_img} width="300" /></p>
+                                        <p className='mt-2'><img src={courseData.prev_img} width="300" alt={courseData.title} /></p>
                                     }
                                 </div>
                                 <div className="mb-3">

@@ -29,7 +29,7 @@ function UserList(){
                     <div className='card'>
                         <h5 className='card-header'>All Student List</h5>
                         <div className='card-body'>
-                            <table className="table table-bordered">
+                            <table className="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
