@@ -6,7 +6,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.response import Response
 
-from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,CourseRatingSerializer
+from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,TeacherDashboardSerializer,CourseRatingSerializer
 from . import models
 
 
@@ -20,6 +20,10 @@ class TeacherDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset=models.Teacher.objects.all()
 	serializer_class=TeacherSerializer
 	# permission_classes=[permissions.IsAuthenticated]
+
+class TeacherDashboard(generics.RetrieveAPIView):
+	queryset=models.Teacher.objects.all()
+	serializer_class=TeacherDashboardSerializer
 
 
 @csrf_exempt

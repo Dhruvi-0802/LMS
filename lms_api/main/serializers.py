@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from . import models
 
+
 class TeacherSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=models.Teacher
@@ -13,6 +14,11 @@ class TeacherSerializer(serializers.ModelSerializer):
 		self.Meta.depth = 0
 		if request and request.method == 'GET':
 			self.Meta.depth = 1
+
+class TeacherDashboardSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=models.Teacher
+		fields=['total_teacher_courses','total_teacher_students','total_teacher_chapters']
 
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
