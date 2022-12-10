@@ -18,6 +18,8 @@ function CourseDetail(){
     const [techList,settechList]=useState([]);
     const [userLoginStatus,setuserLoginStatus]=useState();
     const [enrollStatus,setenrollStatus]=useState();
+    const [ratingStatus,setratingStatus]=useState();
+    const [AvgRating,setAvgRating]=useState(0);
     let {course_id}=useParams();
     const studentId=localStorage.getItem('studentId');
     // Fetch courses when page load
@@ -32,6 +34,10 @@ function CourseDetail(){
                 setteacherData(res.data.teacher);
                 setrealtedcourseData(JSON.parse(res.data.related_videos));
                 settechList(res.data.tech_list);
+                if(res.data.course_rating!='' && res.data.course_rating!=null){
+                    setAvgRating(res.data.course_rating)
+                }
+                
             });
         }catch(error){
             console.log(error);
@@ -43,6 +49,18 @@ function CourseDetail(){
             .then((res)=>{
                 if(res.data.bool==true){
                     setenrollStatus('success');
+                }
+            });
+        }catch(error){
+            console.log(error);
+        }
+
+        // Fetch rating status
+        try{
+            axios.get(baseUrl+'/fetch-rating-status/'+studentId+'/'+course_id)
+            .then((res)=>{
+                if(res.data.bool==true){
+                    setratingStatus('success');
                 }
             });
         }catch(error){
@@ -86,7 +104,50 @@ function CourseDetail(){
         }
     }
 
-    // console.log(realtedcourseData);
+    // Add Rating
+    const [ratingData,setratingData]=useState({
+        rating:'',
+        reviews:''
+    });
+
+    const handleChange=(event)=>{
+        setratingData({
+            ...ratingData,
+            [event.target.name]:event.target.value
+        });
+    }
+
+    const formSubmit=()=>{
+        const _formRatingData=new FormData();
+        _formRatingData.append('course',course_id);
+        _formRatingData.append('student',studentId);
+        _formRatingData.append('rating',ratingData.rating);
+        _formRatingData.append('reviews',ratingData.reviews);
+        
+        try{
+            axios.post(baseUrl+'/course-rating/',_formRatingData,{
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            })
+            .then((res)=>{
+                if(res.status==200||res.status==201){
+                    Swal.fire({
+                        title: 'Rating has been saved',
+                        icon: 'success',
+                        toast:true,
+                        timer:5000,
+                        position:'top-right',
+                        timerProgressBar:true,
+                        showConfirmButton: false
+                    });
+                    window.location.reload();
+                }
+            });
+        }catch(error){
+            console.log(error);
+        }
+    };
 
     return (
         <div className="container mt-3 pb-2">
@@ -107,7 +168,48 @@ function CourseDetail(){
                     </p>
                     <p className="fw-bold">Duration: 3 Hours 30 Minuts</p>
                     <p className="fw-bold">Total Enrolled: {courseData.total_enrolled_students} Student(s) </p>
-                    <p className="fw-bold">Rating: 4.5/5</p>
+                    <p className="fw-bold">
+                        Rating: {AvgRating}/5
+                        { enrollStatus === 'success'  && userLoginStatus === 'success' &&
+                            <>
+                            {ratingStatus != 'success' &&
+                                <button className='btn btn-success btn-sm ms-2' data-bs-toggle="modal" data-bs-target="#ratingModal">Rating</button>
+                            }
+                            {ratingStatus == 'success' &&
+                                <small className='badge bg-info text-dark ms-2'>You already rated this course</small>
+                            }
+                            <div className="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-lg">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="exampleModalLabel">Rate for {courseData.title}</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <form>
+                                                <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Rating</label>
+                                                    <select onChange={handleChange} className='form-control' name='rating'>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="exampleInputPassword1" class="form-label">Review</label>
+                                                    <textarea onChange={handleChange} className='form-control' name="reviews" rows="10"></textarea>
+                                                </div>
+                                                <button type="button" onClick={formSubmit} class="btn btn-primary">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </>
+                        }
+                    </p>
                     { enrollStatus === 'success'  && userLoginStatus == 'success' &&
                         <p><span>You are arleady enrolled in this course</span></p>
                     }
@@ -142,7 +244,7 @@ function CourseDetail(){
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body">
-        <div class="ratio ratio-16x9">
+        <div className="ratio ratio-16x9">
             <iframe src={chapter.video}  title={chapter.title}  allowfullscreen></iframe>
         </div>
       </div>
