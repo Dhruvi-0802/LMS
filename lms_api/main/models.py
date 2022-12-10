@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from django.core import serializers
 import moviepy.editor
@@ -49,6 +50,9 @@ class Course(models.Model):
 		tech_list=self.techs.split(',')
 		return tech_list
 
+	def __str__(self):
+		return self.title
+
 # Chapter Model
 class Chapter(models.Model):
 	course=models.ForeignKey(Course, on_delete=models.CASCADE,related_name='course_chapters')
@@ -84,5 +88,20 @@ class Student(models.Model):
 	username=models.CharField(max_length=200)
 	interested_categories=models.TextField()
 
+	def __str__(self):
+		return self.full_name
+
 	class Meta:
 		verbose_name_plural="5. Students"
+
+# Student Course Enrollement
+class StudentCourseEnrollment(models.Model):
+	course=models.ForeignKey(Course,on_delete=models.CASCADE,related_name='enrolled_courses')
+	student=models.ForeignKey(Student,on_delete=models.CASCADE,related_name='enrolled_student')
+	enrolled_time=models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		verbose_name_plural="6. Enrolled Courses"
+
+	def __str__(self):
+		return f"{self.course}-{self.student}"

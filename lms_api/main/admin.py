@@ -6,4 +6,4 @@ admin.site.register(models.CourseCategory)
 admin.site.register(models.Course)
 admin.site.register(models.Chapter)
 admin.site.register(models.Student)
-# Register your models here.
+admin.site.register(models.StudentCourseEnrollment)
