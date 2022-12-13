@@ -48,13 +48,11 @@ function AddCourse(){
         _formData.append('description',courseData.description);
         _formData.append('featured_img',courseData.f_img,courseData.f_img.name);
         _formData.append('techs',courseData.techs);
-        
+        for (var key of _formData.entries()) {
+			console.log(key[0] + ', ' + key[1])
+		}
         try{
-            axios.post(baseUrl+'/course/',_formData,{
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            })
+            axios.post(baseUrl+'/course/',_formData)
             .then((res)=>{
                 // console.log(res.data);
                 window.location.href='/add-course';

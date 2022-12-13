@@ -70,11 +70,7 @@ function ProfileSetting(){
         }
 
         try{
-            axios.put(baseUrl+'/teacher/'+teacherId+'/',teacherFormData,{
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            }).then((response)=>{
+            axios.put(baseUrl+'/teacher/'+teacherId+'/',teacherFormData).then((response)=>{
                 if(response.status==200){
                     Swal.fire({
                         title: 'Data has been updated',

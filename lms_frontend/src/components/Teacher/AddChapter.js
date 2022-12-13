@@ -51,11 +51,7 @@ function AddChapter(){
         _formData.append('remarks',chapterData.remarks);
         
         try{
-            axios.post(baseUrl+'/course-chapters/'+course_id,_formData,{
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            })
+            axios.post(baseUrl+'/course-chapters/'+course_id,_formData)
             .then((res)=>{
                 if(res.status==200||res.status==201){
                     Swal.fire({

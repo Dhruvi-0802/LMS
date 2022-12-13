@@ -83,7 +83,7 @@ function EditChapter(){
             axios.get(baseUrl+'/chapter/'+chapter_id)
             .then((res)=>{
                 setChapterData({
-                    course:res.data.course,
+                    course:res.data.course.id,
                     title:res.data.title,
                     description:res.data.description,
                     prev_video:res.data.video,
