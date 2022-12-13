@@ -20,8 +20,8 @@ function FavoriteCourses(){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>Php Development</td>
-                                    <td><Link to="/">Suraj Kumar</Link></td>
+                                    <td>Python for Everybody</td>
+                                    <td><Link to="/">John Hopkins</Link></td>
                                     <td>
                                         <button className='btn btn-danger btn-sm active'>Delete</button>
                                     </td>
