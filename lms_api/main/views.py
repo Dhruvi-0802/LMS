@@ -2,11 +2,12 @@ from webbrowser import get
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.response import Response
 
-from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,TeacherDashboardSerializer,CourseRatingSerializer
+from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,TeacherDashboardSerializer,CourseRatingSerializer,StudentFavoriteCourseSerializer
 from . import models
 
 
@@ -55,7 +56,7 @@ class CourseList(generics.ListCreateAPIView):
 		if 'result' in self.request.GET:
 			limit=int(self.request.GET['result'])
 			qs=models.Course.objects.all().order_by('-id')[:limit]
-			
+
 		if 'category' in self.request.GET:
 			category=self.request.GET['category']
 			qs=models.Course.objects.filter(techs__icontains=category)
@@ -65,6 +66,17 @@ class CourseList(generics.ListCreateAPIView):
 			teacher=self.request.GET['teacher']
 			teacher=models.Teacher.objects.filter(id=teacher).first()
 			qs=models.Course.objects.filter(techs__icontains=skill_name,teacher=teacher)
+
+		elif 'studentId' in self.kwargs:
+			student_id=self.kwargs['studentId']
+			student = models.Student.objects.get(pk=student_id)
+			print(student.interested_categories)
+			queries = [Q(techs__iendswith=value) for value in student.interested_categories]
+			query = queries.pop()
+			for item in queries:
+				query |= item
+			qs=models.Course.objects.filter(query)
+			return qs
 
 		return qs
 
@@ -133,12 +145,33 @@ class StudentEnrollCourseList(generics.ListCreateAPIView):
 	queryset=models.StudentCourseEnrollment.objects.all()
 	serializer_class=StudentCourseEnrollSerializer
 
+class StudentFavoriteCourseList(generics.ListCreateAPIView):
+	queryset=models.StudentFavoriteCourse.objects.all()
+	serializer_class=StudentFavoriteCourseSerializer
 
 def fetch_enroll_status(request,student_id,course_id):
 	student=models.Student.objects.filter(id=student_id).first()
 	course=models.Course.objects.filter(id=course_id).first()
 	enrollStatus=models.StudentCourseEnrollment.objects.filter(course=course,student=student).count()
 	if enrollStatus:
+		return JsonResponse({'bool':True})
+	else:
+		return JsonResponse({'bool':False})
+
+def fetch_favorite_status(request,student_id,course_id):
+	student=models.Student.objects.filter(id=student_id).first()
+	course=models.Course.objects.filter(id=course_id).first()
+	favoriteStatus=models.StudentFavoriteCourse.objects.filter(course=course,student=student).first()
+	if favoriteStatus and favoriteStatus.status == True:
+		return JsonResponse({'bool':True})
+	else:
+		return JsonResponse({'bool':False})
+
+def remove_favorite_course(request,course_id,student_id):
+	student=models.Student.objects.filter(id=student_id).first()
+	course=models.Course.objects.filter(id=course_id).first()
+	favoriteStatus=models.StudentFavoriteCourse.objects.filter(course=course,student=student).delete()
+	if favoriteStatus:
 		return JsonResponse({'bool':True})
 	else:
 		return JsonResponse({'bool':False})
