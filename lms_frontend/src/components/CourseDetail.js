@@ -319,19 +319,26 @@ function CourseDetail(){
                     <li className="list-group-item" key={chapter.id}>{chapter.title}
                         <span className="float-end">
                             <span className="me-5">{chapter.chapter_duration}</span>
-                            <button className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#videoModal1"><i className="bi-youtube"></i></button>
+                            
+                            {chapter.video && 
+                            <button className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target={`#videoModal${chapter.id}`}><i className="bi-youtube"></i></button>
+                            }
                         </span>
 {/* Video Modal Start */}
-<div className="modal fade" id="videoModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div className="modal fade" id={`videoModal${chapter.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div className="modal-dialog modal-xl">
     <div className="modal-content">
       <div className="modal-header">
-        <h5 className="modal-title" id="exampleModalLabel">Video 1</h5>
+      <h5 className="modal-title" id="exampleModalLabel">{chapter.title}</h5>
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body">
         <div className="ratio ratio-16x9">
-            <iframe src={chapter.video}  title={chapter.title}  allowfullscreen></iframe>
+            {/* <iframe src={chapter.video}  title={chapter.title} ></iframe> */}
+            <video width="320" height="240" controls>
+                <source src={chapter.video} type="video/mp4" />
+                <source src={chapter.video} type="video/mkv" />
+            </video> 
         </div>
       </div>
     </div>

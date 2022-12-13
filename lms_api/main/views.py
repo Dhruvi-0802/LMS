@@ -7,7 +7,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.response import Response
 
-from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,TeacherDashboardSerializer,CourseRatingSerializer,StudentFavoriteCourseSerializer
+from .serializers import TeacherSerializer,CategorySerializer,CourseSerializer,ChapterSerializer,StudentSerializer,StudentCourseEnrollSerializer,TeacherDashboardSerializer,CourseRatingSerializer,StudentFavoriteCourseSerializer,StudentAssignmentSerializer
 from . import models
 
 
@@ -227,3 +227,30 @@ def teacher_change_password(request,teacher_id):
 		return JsonResponse({'bool':True})
 	else:
 		return JsonResponse({'bool':False})
+
+
+
+class AssignmentList(generics.ListCreateAPIView):
+	queryset=models.StudentAssignment.objects.all()
+	serializer_class=StudentAssignmentSerializer
+
+	def get_queryset(self):
+		student_id=self.kwargs['student_id']
+		teacher_id=self.kwargs['teacher_id']
+		student = models.Student.objects.get(pk=student_id)
+		teacher = models.Teacher.objects.get(pk=teacher_id)
+		return models.StudentAssignment.objects.filter(student=student,teacher=teacher)
+
+
+class MyAssignmentList(generics.ListCreateAPIView):
+	queryset=models.StudentAssignment.objects.all()
+	serializer_class=StudentAssignmentSerializer
+
+	def get_queryset(self):
+		student_id=self.kwargs['student_id']
+		student = models.Student.objects.get(pk=student_id)
+		return models.StudentAssignment.objects.filter(student=student)
+
+class UpdateAssignment(generics.RetrieveUpdateDestroyAPIView):
+	queryset=models.StudentAssignment.objects.all()
+	serializer_class=StudentAssignmentSerializer
